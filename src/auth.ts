@@ -9,6 +9,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [GitHub, Resend, Passkey],
   experimental: { enableWebAuthn: true },
+  session: {
+    strategy: "jwt",
+  },
   pages: {
     signIn: "/login",
     signOut: "/logout",
