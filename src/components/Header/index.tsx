@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ThemeToggle } from "../ThemeToggle";
+import UserMenu from "../UserMenu";
 
 const Header = () => {
   return (
@@ -7,7 +8,11 @@ const Header = () => {
       <Link href="/">
         <h1>ProjMan</h1>
       </Link>
-      <ThemeToggle />
+
+      <div className="flex gap-4">
+        <UserMenu />
+        <ThemeToggle />
+      </div>
     </header>
   );
 };
