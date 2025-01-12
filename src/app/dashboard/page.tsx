@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,24 +33,58 @@ const mockProjects: Project[] = [
     name: "Project Gamma",
     description: "Description of Project Gamma",
   },
+  {
+    id: "4",
+    name: "Project Gamma",
+    description: "Description of Project Gamma",
+  },
+  {
+    id: "5",
+    name: "Project Gamma",
+    description: "Description of Project Gamma",
+  },
+  {
+    id: "6",
+    name: "Project Gamma",
+    description: "Description of Project Gamma",
+  },
+  {
+    id: "7",
+    name: "Project Gamma",
+    description: "Description of Project Gamma",
+  },
+  {
+    id: "8",
+    name: "Project Gamma",
+    description: "Description of Project Gamma",
+  },
+  {
+    id: "9",
+    name: "Project Gamma",
+    description: "Description of Project Gamma",
+  },
+  {
+    id: "10",
+    name: "Project Gamma",
+    description: "Description of Project Gamma",
+  },
+  {
+    id: "11",
+    name: "Project Gamma",
+    description: "Description of Project Gamma",
+  },
 ];
 
 export default function Dashboard() {
   const [search, setSearch] = useState("");
-  const [projects, setProjects] = useState<Project[]>(mockProjects);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
-  const filteredProjects = projects.filter((project) =>
+  const filteredProjects = mockProjects.filter((project) =>
     project.name.toLowerCase().includes(search.toLowerCase())
   );
-
-  const handleManageProject = (projectId: string) => {
-    console.log(`Managing project ${projectId}`);
-    // Navegação ou lógica de gerenciamento
-  };
 
   return (
     <div className="container mx-auto p-4 space-y-4 ">
@@ -78,7 +113,7 @@ export default function Dashboard() {
           className="w-full md:w-1/3"
         />
         <p className="text-sm text-muted-foreground">
-          Showing {filteredProjects.length} of {projects.length} projects
+          Showing {filteredProjects.length} of {mockProjects.length} projects
         </p>
       </div>
 
@@ -92,12 +127,16 @@ export default function Dashboard() {
               <p className="text-sm text-muted-foreground">
                 {project.description}
               </p>
-              <Button
-                onClick={() => handleManageProject(project.id)}
-                className="mt-2 w-full"
-              >
-                Manage Project
-              </Button>
+              <div className="flex gap-4">
+                <Button className="mt-2 w-full">
+                  <Link href={`/project/${project.id}`}>Project Page</Link>
+                </Button>
+                <Button variant="outline" className="mt-2 w-full">
+                  <Link href={`/manage/project/${project.id}`}>
+                    Manage Project
+                  </Link>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         ))}
