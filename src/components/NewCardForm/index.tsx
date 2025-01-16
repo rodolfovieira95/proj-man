@@ -21,7 +21,12 @@ interface ProjectFormData {
 }
 
 const NewCardForm = ({ columnId }: { columnId: string }) => {
-  const form = useForm<ProjectFormData>();
+  const form = useForm<ProjectFormData>({
+    defaultValues: {
+      title: "",
+      description: "",
+    },
+  });
 
   const onSubmit = async (data: { title: string; description: string }) => {
     try {

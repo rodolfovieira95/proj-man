@@ -22,7 +22,12 @@ interface ProjectFormData {
 }
 
 const NewProjectForm = () => {
-  const form = useForm<ProjectFormData>();
+  const form = useForm<ProjectFormData>({
+    defaultValues: {
+      title: "",
+      description: "",
+    },
+  });
   const { data: session } = useSession();
 
   const onSubmit = async (data: { title: string; description: string }) => {

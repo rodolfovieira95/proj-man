@@ -14,7 +14,12 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 const ProjectMgmtForm = () => {
-  const form = useForm();
+  const form = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+    },
+  });
 
   return (
     <Form {...form}>
