@@ -6,7 +6,6 @@ const SigninPage = () => {
     "use server";
     // Para provedores que requerem dados do formulário, como o "resend"
     if (formData) {
-      console.log(formData);
       await signIn(provider, formData);
     } else {
       // Para provedores que não usam dados do formulário
