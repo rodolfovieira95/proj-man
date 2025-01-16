@@ -1,5 +1,7 @@
+import ColumnLayoutEditor from "@/components/ColumnLayoutEditor";
+import DeleteProjectDialog from "@/components/DeleteProjectDialog";
 import ProjectMgmtForm from "@/components/ProjectMgmtForm";
-import { Button } from "@/components/ui/button";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserManagement from "@/components/UserMgmtTable";
 
@@ -18,13 +20,17 @@ const ManageProjectPage = async ({
         <TabsList>
           <TabsTrigger value="info">Project Info</TabsTrigger>
           <TabsTrigger value="users">Project Users</TabsTrigger>
+          <TabsTrigger value="layout">Project Layout</TabsTrigger>
         </TabsList>
         <TabsContent value="info">
           <ProjectMgmtForm />
-          <Button variant="destructive">Delete Project</Button>
+          <DeleteProjectDialog projectId={projectId} />
         </TabsContent>
         <TabsContent value="users">
-          <UserManagement />
+          <UserManagement projectId={projectId} />
+        </TabsContent>
+        <TabsContent value="layout">
+          <ColumnLayoutEditor projectId={projectId} />
         </TabsContent>
       </Tabs>
     </div>
