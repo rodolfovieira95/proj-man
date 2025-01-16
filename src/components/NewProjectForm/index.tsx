@@ -15,6 +15,9 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { createProject } from "@/actions/projects";
 import { useSession } from "next-auth/react";
+import { DialogClose } from "../ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 interface ProjectFormData {
   title: string;
@@ -29,6 +32,8 @@ const NewProjectForm = () => {
     },
   });
   const { data: session } = useSession();
+  const { toast } = useToast();
+  const router = useRouter();
 
   const onSubmit = async (data: { title: string; description: string }) => {
     try {
@@ -36,10 +41,18 @@ const NewProjectForm = () => {
         throw new Error("User not authenticated");
       }
       await createProject(data, session.user.id);
-      alert("Projeto criado com sucesso!");
+      toast({
+        title: "Sucesso!",
+        description: "Projeto criado com sucesso!",
+      });
+      router.refresh();
     } catch (error) {
+      toast({
+        title: "Erro!",
+        description: "Houve um erro ao criar o projeto.",
+        variant: "destructive",
+      });
       console.error("Erro ao criar projeto:", error);
-      alert("Erro ao criar projeto.");
     }
   };
 
@@ -78,9 +91,16 @@ const NewProjectForm = () => {
             </FormItem>
           )}
         />
-
-        <Button variant="outline">Cancelar</Button>
-        <Button type="submit">Enviar</Button>
+        <div className="flex justify-between mt-8">
+          <DialogClose asChild>
+            <Button type="button" variant="outline">
+              Cancelar
+            </Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button type="submit">Enviar</Button>
+          </DialogClose>
+        </div>
       </form>
     </Form>
   );
