@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,147 +18,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getProjectUsers, ProjectUsers } from "@/actions/projects";
+import { Role } from "@prisma/client";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  permission: "Admin" | "Editor" | "Viewer";
-};
-
-const mockUsers: User[] = [
-  {
-    id: "1",
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    permission: "Admin",
-  },
-  {
-    id: "2",
-    name: "Bob Smith",
-    email: "bob@example.com",
-    permission: "Editor",
-  },
-  {
-    id: "3",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "4",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "5",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "6",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "7",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "8",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "9",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "10",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "11",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "12",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "13",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "14",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "15",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "16",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "17",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-  {
-    id: "18",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    permission: "Viewer",
-  },
-];
-
-export default function UserManagement() {
-  const [users, setUsers] = useState<User[]>(mockUsers);
+export default function UserManagement({ projectId }: { projectId: string }) {
+  const [projectUsers, setProjectUsers] = useState<ProjectUsers>([]);
   const [search, setSearch] = useState("");
-  const [filterPermission, setFilterPermission] = useState<
-    "All" | "Admin" | "Editor" | "Viewer"
-  >("All");
+  const [filterPermission, setFilterPermission] = useState<"All" | Role>("All");
 
-  const handlePermissionChange = (
-    id: string,
-    newPermission: User["permission"]
-  ) => {
-    setUsers((prevUsers) =>
+  useEffect(() => {
+    const getUsers = async () => {
+      const data = await getProjectUsers(projectId);
+      setProjectUsers(data);
+    };
+    getUsers();
+  }, []);
+
+  const handlePermissionChange = (id: string, newPermission: Role) => {
+    setProjectUsers((prevUsers) =>
       prevUsers.map((user) =>
         user.id === id ? { ...user, permission: newPermission } : user
       )
     );
   };
 
-  const filteredUsers = users.filter((user) => {
+  const filteredUsers = projectUsers?.filter((projectUser) => {
+    if (!projectUser.user.name) return [];
+
     return (
-      user.name.toLowerCase().includes(search.toLowerCase()) &&
-      (filterPermission === "All" || user.permission === filterPermission)
+      projectUser.user.name.toLowerCase().includes(search.toLowerCase()) &&
+      (filterPermission === "All" || projectUser.role === filterPermission)
     );
   });
 
@@ -166,7 +55,6 @@ export default function UserManagement() {
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">Gerenciamento de Usuários</h1>
 
-      {/* Filtros */}
       <div className="flex flex-col md:flex-row md:items-center gap-4">
         <Input
           placeholder="Buscar por nome..."
@@ -204,15 +92,15 @@ export default function UserManagement() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredUsers.map((user) => (
+          {filteredUsers.map(({ user, role }) => (
             <TableRow key={user.id}>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>
                 <Select
-                  value={user.permission}
+                  value={role}
                   onValueChange={(value) =>
-                    handlePermissionChange(user.id, value as User["permission"])
+                    handlePermissionChange(user.id, value as Role)
                   }
                 >
                   <SelectTrigger>
@@ -238,7 +126,6 @@ export default function UserManagement() {
         </TableBody>
       </Table>
 
-      {/* Mensagem caso não encontre usuários */}
       {filteredUsers.length === 0 && (
         <p className="text-center text-gray-500">Nenhum usuário encontrado.</p>
       )}
