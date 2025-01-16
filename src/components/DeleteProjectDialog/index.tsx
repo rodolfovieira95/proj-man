@@ -16,10 +16,10 @@ const DeleteProjectDialog = ({ projectId }: { projectId: string }) => {
   const handleDeleteButton = async () => {
     try {
       await deleteProject(projectId);
-      redirect("/dashboard");
     } catch (error) {
       console.error(error);
     }
+    redirect("/dashboard");
   };
   return (
     <Dialog>
