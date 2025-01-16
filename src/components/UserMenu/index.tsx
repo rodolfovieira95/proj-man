@@ -30,7 +30,7 @@ const UserMenu = async () => {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar className="cursor-pointer">
-            <AvatarImage src="/path-to-user-image.jpg" alt="User Avatar" />
+            <AvatarImage src={session.user.image || ""} alt="User Avatar" />
             <AvatarFallback>{getUserInitials()}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
