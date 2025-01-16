@@ -1,48 +1,35 @@
 "use client";
 
 import React, { useState } from "react";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  OnDragEndResponder,
+} from "@hello-pangea/dnd";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-type CardData = {
-  id: string;
-  title: string;
-  description: string;
-};
+export default function KanbanBoard({
+  initialColumns,
+}: {
+  initialColumns:
+    | ({
+        cards: {
+          id: string;
+          description: string | null;
+          title: string;
+          columnId: string;
+        }[];
+      } & {
+        name: string;
+        id: string;
+        projectId: string;
+      })[]
+    | undefined;
+}) {
+  const [columns, setColumns] = useState(initialColumns);
 
-type ColumnData = {
-  id: string;
-  name: string;
-  cards: CardData[];
-};
-
-const initialColumns: ColumnData[] = [
-  {
-    id: "todo",
-    name: "To Do",
-    cards: [
-      { id: "1", title: "Card 1", description: "Task details for card 1" },
-      { id: "2", title: "Card 2", description: "Task details for card 2" },
-    ],
-  },
-  {
-    id: "inProgress",
-    name: "In Progress",
-    cards: [
-      { id: "3", title: "Card 3", description: "Task details for card 3" },
-    ],
-  },
-  {
-    id: "done",
-    name: "Done",
-    cards: [],
-  },
-];
-
-export default function KanbanBoard() {
-  const [columns, setColumns] = useState<ColumnData[]>(initialColumns);
-
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd: OnDragEndResponder = (result) => {
     const { source, destination } = result;
 
     if (!destination) return; // Se o item não foi solto em uma área válida, não faz nada
@@ -56,8 +43,8 @@ export default function KanbanBoard() {
     }
 
     // Encontre a coluna de origem
-    const sourceColumn = columns.find((col) => col.id === source.droppableId);
-    const destinationColumn = columns.find(
+    const sourceColumn = columns?.find((col) => col.id === source.droppableId);
+    const destinationColumn = columns?.find(
       (col) => col.id === destination.droppableId
     );
 
@@ -71,7 +58,7 @@ export default function KanbanBoard() {
       // Reordenação dentro da mesma coluna
       sourceCards.splice(destination.index, 0, removedCard);
       setColumns((prevColumns) =>
-        prevColumns.map((col) =>
+        prevColumns?.map((col) =>
           col.id === sourceColumn.id ? { ...col, cards: sourceCards } : col
         )
       );
@@ -81,7 +68,7 @@ export default function KanbanBoard() {
       destinationCards.splice(destination.index, 0, removedCard);
 
       setColumns((prevColumns) =>
-        prevColumns.map((col) => {
+        prevColumns?.map((col) => {
           if (col.id === sourceColumn.id) {
             return { ...col, cards: sourceCards };
           }
@@ -96,10 +83,9 @@ export default function KanbanBoard() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Gerenciamento de Projetos</h1>
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {columns.map((column) => (
+          {columns?.map((column) => (
             <Droppable key={column.id} droppableId={column.id}>
               {(provided, snapshot) => (
                 <div
