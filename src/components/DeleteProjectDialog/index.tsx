@@ -24,7 +24,9 @@ const DeleteProjectDialog = ({ projectId }: { projectId: string }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="destructive">Delete Project</Button>
+        <Button className="mt-8" variant="destructive">
+          Delete
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

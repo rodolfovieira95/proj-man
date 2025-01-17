@@ -12,8 +12,9 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import DeleteProjectDialog from "../DeleteProjectDialog";
 
-const ProjectMgmtForm = () => {
+const ProjectMgmtForm = ({ projectId }: { projectId: string }) => {
   const form = useForm({
     defaultValues: {
       title: "",
@@ -55,9 +56,11 @@ const ProjectMgmtForm = () => {
           </FormItem>
         )}
       />
-
-      <Button variant="outline">Cancelar</Button>
-      <Button type="submit">Enviar</Button>
+      <div className="flex gap-4">
+        <Button variant="outline">Cancelar</Button>
+        <Button type="submit">Enviar</Button>
+      </div>
+      <DeleteProjectDialog projectId={projectId} />
     </Form>
   );
 };
