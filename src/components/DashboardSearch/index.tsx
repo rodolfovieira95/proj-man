@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Project } from "@prisma/client";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
-import { Project } from "@prisma/client";
 import { Button } from "../ui/button";
 
 const DashboardSearch = ({ projects }: { projects: Project[] }) => {
   const [search, setSearch] = useState("");
+  const { push } = useRouter();
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
@@ -42,13 +43,18 @@ const DashboardSearch = ({ projects }: { projects: Project[] }) => {
                 {project.description}
               </p>
               <div className="flex gap-4">
-                <Button className="mt-2 w-full">
-                  <Link href={`/project/${project.id}`}>Project Page</Link>
+                <Button
+                  className="mt-2 w-full"
+                  onClick={() => push(`/project/${project.id}`)}
+                >
+                  View
                 </Button>
-                <Button variant="outline" className="mt-2 w-full">
-                  <Link href={`/manage/project/${project.id}`}>
-                    Manage Project
-                  </Link>
+                <Button
+                  variant="outline"
+                  className="mt-2 w-full"
+                  onClick={() => push(`/manage/project/${project.id}`)}
+                >
+                  Manage
                 </Button>
               </div>
             </CardContent>
