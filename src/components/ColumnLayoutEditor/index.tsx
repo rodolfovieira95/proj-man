@@ -112,7 +112,7 @@ export default function ColumnLayoutEditor({
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                       ref={provided.innerRef}
-                      className="p-4 bg-gray-100 border rounded-lg shadow-md flex flex-col items-center"
+                      className="p-4 bg-accent border rounded-lg shadow-md flex flex-col items-center"
                     >
                       <span>{column}</span>
                       {customMode && (
