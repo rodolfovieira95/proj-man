@@ -23,7 +23,7 @@ const ProjectPage = async ({
 
   return (
     <main>
-      <section className="px-8 flex justify-between w-full">
+      <section className="px-8 flex justify-between w-full mt-8">
         <h1 className=" font-bold text-xl">{data?.name}</h1>
         <Dialog>
           <DialogTrigger asChild>
