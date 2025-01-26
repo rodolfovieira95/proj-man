@@ -8,7 +8,6 @@ export async function middleware(req: NextRequest) {
   if (pathname.startsWith("/dashboard")) {
     if (!session?.user) {
       const loginUrl = new URL("/login", req.url);
-      loginUrl.searchParams.set("callbackUrl", req.url);
       return NextResponse.redirect(loginUrl);
     }
   }
@@ -20,5 +19,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/project/:path*", "/"],
+  matcher: ["/dashboard", "/project/:path*"],
 };
