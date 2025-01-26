@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/webauthn";
+import { Button } from "../ui/button";
 
 const PasskeyLogin = () => {
   return (
@@ -10,7 +11,7 @@ const PasskeyLogin = () => {
       }}
       className="flex gap-4 mt-4"
     >
-      <button type="submit">Signin with Passkey</button>
+      <Button type="submit">Signin with Passkey</Button>
     </form>
   );
 };
