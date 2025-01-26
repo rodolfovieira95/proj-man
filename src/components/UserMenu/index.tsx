@@ -1,18 +1,14 @@
-import Link from "next/link";
-import { DropdownMenu, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { auth } from "@/auth";
+
 import MenuContent from "./MenuContent";
+import LoginButton from "./LoginButton";
+
+import { DropdownMenu, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const UserMenu = async () => {
   const session = await auth();
-  if (!session?.user)
-    return (
-      <Button>
-        <Link href="/login">Login</Link>
-      </Button>
-    );
+  if (!session?.user) return <LoginButton />;
 
   const getUserInitials = () => {
     const name = session?.user?.name;
