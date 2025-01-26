@@ -11,7 +11,10 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
   }
-  if (pathname === "/" || (pathname === "/login" && session?.user)) {
+  if (
+    (pathname === "/" && session?.user) ||
+    (pathname === "/login" && session?.user)
+  ) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
@@ -19,5 +22,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/project/:path*"],
+  matcher: ["/dashboard", "/project/:path*", "/", "/login"],
 };

@@ -1,13 +1,9 @@
 import Link from "next/link";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { auth } from "@/auth";
+import MenuContent from "./MenuContent";
 
 const UserMenu = async () => {
   const session = await auth();
@@ -34,14 +30,7 @@ const UserMenu = async () => {
             <AvatarFallback>{getUserInitials()}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem>
-            <Link href="/profile">Profile</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link href="/signout">Logout</Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
+        <MenuContent />
       </DropdownMenu>
     </div>
   );
