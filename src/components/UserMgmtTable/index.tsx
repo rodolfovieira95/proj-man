@@ -41,7 +41,7 @@ export default function UserManagement({ projectId }: { projectId: string }) {
       setProjectUsers(data);
     };
     getUsers();
-  }, []);
+  }, [projectId]);
 
   const handlePermissionChange = (id: string, newPermission: Role) => {
     setProjectUsers((prevUsers) =>
