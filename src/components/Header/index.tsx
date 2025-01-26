@@ -4,7 +4,7 @@ import UserMenu from "../UserMenu";
 
 const Header = () => {
   return (
-    <header className="flex justify-between px-8 py-4 border-b border-accent mb-8">
+    <header className="flex justify-between px-8 py-4 border-b border-accent">
       <Link href="/">
         <h1>ProjMan</h1>
       </Link>
