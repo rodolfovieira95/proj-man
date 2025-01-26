@@ -20,7 +20,18 @@ export async function createCard(
       title: data.title,
       columnId,
       description: data.description,
+      order: 0,
     },
   });
   return project;
+}
+
+export async function updateCardOrder(columnId: string, cardIds: string[]) {
+  const updatePromises = cardIds.map((cardId, index) =>
+    prisma.card.update({
+      where: { id: cardId },
+      data: { order: index, columnId },
+    })
+  );
+  await Promise.all(updatePromises);
 }
