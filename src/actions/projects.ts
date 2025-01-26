@@ -43,6 +43,16 @@ export async function createProject(
       ownerId: userId,
     },
   });
+  const predefinedColumns = ["To Do", "In Progress", "Done"];
+  const columnsArray = predefinedColumns.map((name) => ({
+    name,
+    projectId: project.id,
+  }));
+
+  await prisma.column.createMany({
+    data: columnsArray,
+  });
+
   return project;
 }
 
@@ -80,4 +90,18 @@ export async function getProjectUsers(
   }
 
   return [];
+}
+
+export async function updateProjectInfo(projectInfo: {
+  id: string;
+  title?: string;
+  description?: string;
+}) {
+  return prisma.project.update({
+    where: { id: projectInfo.id },
+    data: {
+      name: projectInfo.title,
+      description: projectInfo.description,
+    },
+  });
 }
