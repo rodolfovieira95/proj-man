@@ -20,6 +20,15 @@ import {
 } from "@/components/ui/table";
 import { getProjectUsers, ProjectUsers } from "@/actions/projects";
 import { Role } from "@prisma/client";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Label } from "../ui/label";
 
 export default function UserManagement({ projectId }: { projectId: string }) {
   const [projectUsers, setProjectUsers] = useState<ProjectUsers>([]);
@@ -79,6 +88,21 @@ export default function UserManagement({ projectId }: { projectId: string }) {
             <SelectItem value="Viewer">Viewer</SelectItem>
           </SelectContent>
         </Select>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>New User</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Adicionar novo usuário</DialogTitle>
+              <DialogClose />
+            </DialogHeader>
+            <Label>E-mail</Label>
+            <Input placeholder="email@email.com" />
+            <Button>Adicionar</Button>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Tabela */}
