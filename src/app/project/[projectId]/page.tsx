@@ -1,3 +1,4 @@
+import { getColumns } from "@/actions/columns";
 import { getProjectInfo } from "@/actions/projects";
 import KanbanBoard from "@/components/KanbanBoard";
 import NewCardForm from "@/components/NewCardForm";
@@ -18,6 +19,7 @@ const ProjectPage = async ({
 }) => {
   const projectId = (await params).projectId;
   const data = await getProjectInfo(projectId);
+  const columns = await getColumns(projectId);
 
   return (
     <main>
@@ -36,7 +38,7 @@ const ProjectPage = async ({
           </DialogContent>
         </Dialog>
       </section>
-      <KanbanBoard initialColumns={data?.columns} />
+      <KanbanBoard initialColumns={columns} />
     </main>
   );
 };
