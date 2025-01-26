@@ -26,7 +26,7 @@ export default async function Dashboard() {
   const projects = await getUserProjects(session?.user?.id || "");
 
   return (
-    <div className="container mx-auto p-4 space-y-4 ">
+    <div className="container mx-auto p-4 space-y-4 min-h-dvh">
       <section className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <Dialog>
