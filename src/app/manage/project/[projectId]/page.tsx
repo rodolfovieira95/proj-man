@@ -1,3 +1,4 @@
+import { getProjectInfo } from "@/actions/projects";
 import ColumnLayoutEditor from "@/components/ColumnLayoutEditor";
 import ProjectMgmtForm from "@/components/ProjectMgmtForm";
 
@@ -10,10 +11,11 @@ const ManageProjectPage = async ({
   params: Promise<{ projectId: string }>;
 }) => {
   const projectId = (await params).projectId;
+  const projectInfo = await getProjectInfo(projectId);
 
   return (
     <div className="px-8 min-h-dvh">
-      <h1 className="mb-8">Manage Project: {projectId}</h1>
+      <h1 className="mb-8">Manage Project: {projectInfo?.name}</h1>
 
       <Tabs defaultValue="info" className="w-full">
         <TabsList>
