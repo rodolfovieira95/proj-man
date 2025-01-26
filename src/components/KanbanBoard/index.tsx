@@ -8,6 +8,8 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { updateCardOrder } from "@/actions/cards";
+import { Card as CardType } from ".prisma/client";
 
 export default function KanbanBoard({
   initialColumns,
@@ -29,7 +31,7 @@ export default function KanbanBoard({
 }) {
   const [columns, setColumns] = useState(initialColumns);
 
-  const handleDragEnd: OnDragEndResponder = (result) => {
+  const handleDragEnd: OnDragEndResponder = async (result) => {
     const { source, destination } = result;
 
     if (!destination) return; // Se o item não foi solto em uma área válida, não faz nada
@@ -51,7 +53,7 @@ export default function KanbanBoard({
     if (!sourceColumn || !destinationColumn) return;
 
     // Atualize o estado para reordenar ou mover cards
-    const sourceCards = Array.from(sourceColumn.cards);
+    const sourceCards = Array.from(sourceColumn.cards) as CardType[];
     const [removedCard] = sourceCards.splice(source.index, 1);
 
     if (sourceColumn.id === destinationColumn.id) {
@@ -62,9 +64,15 @@ export default function KanbanBoard({
           col.id === sourceColumn.id ? { ...col, cards: sourceCards } : col
         )
       );
+      await updateCardOrder(
+        sourceColumn.id,
+        sourceCards.map((card) => card.id)
+      );
     } else {
       // Mover entre colunas
-      const destinationCards = Array.from(destinationColumn.cards);
+      const destinationCards = Array.from(
+        destinationColumn.cards
+      ) as CardType[];
       destinationCards.splice(destination.index, 0, removedCard);
 
       setColumns((prevColumns) =>
@@ -78,20 +86,28 @@ export default function KanbanBoard({
           return col;
         })
       );
+      await updateCardOrder(
+        sourceColumn.id,
+        sourceCards.map((card) => card.id)
+      );
+      await updateCardOrder(
+        destinationColumn.id,
+        destinationCards.map((card) => card.id)
+      );
     }
   };
 
   return (
     <div className="p-6 space-y-6">
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="flex gap-4 overflow-x-auto">
           {columns?.map((column) => (
             <Droppable key={column.id} droppableId={column.id}>
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className={`p-4 rounded-lg shadow space-y-4 transition-colors duration-200 ${
+                  className={`p-4 rounded-lg shadow space-y-4 transition-colors duration-200 flex-shrink-0 w-[300px] ${
                     snapshot.isDraggingOver ? "bg-blue-100" : "bg-muted"
                   }`}
                 >
