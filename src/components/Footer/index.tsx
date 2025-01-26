@@ -4,21 +4,31 @@ const Footer = () => {
       className="px-6 py-4 text-center border-t border-border bg-muted text-muted-foreground"
       id="footer"
     >
-      <p className="mb-4">Follow us on:</p>
+      <p className="mb-4">Follow me on:</p>
       <div className="flex justify-center gap-4">
-        <a href="https://twitter.com" aria-label="Twitter">
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            {/* Ícone do Twitter */}
+        <a href="https://x.com/rods_dev" aria-label="X">
+          <svg
+            version="1.1"
+            id="Layer_1"
+            width="24px"
+            height="24px"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M14.095479,10.316482L22.286354,1h-1.940718l-7.115352,8.087682L7.551414,1H1l8.589488,12.231093L1,23h1.940717  l7.509372-8.542861L16.448587,23H23L14.095479,10.316482z M11.436522,13.338465l-0.871624-1.218704l-6.924311-9.68815h2.981339  l5.58978,7.82155l0.867949,1.218704l7.26506,10.166271h-2.981339L11.436522,13.338465z" />
           </svg>
         </a>
-        <a href="https://linkedin.com" aria-label="LinkedIn">
+        <a
+          href="https://www.linkedin.com/in/rafvieira95/"
+          aria-label="LinkedIn"
+        >
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            {/* Ícone do LinkedIn */}
+            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11.75 20h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.25 12.268h-3v-5.604c0-1.337-.025-3.063-1.867-3.063-1.869 0-2.156 1.459-2.156 2.963v5.704h-3v-11h2.875v1.5h.041c.4-.756 1.375-1.554 2.833-1.554 3.025 0 3.583 1.992 3.583 4.583v6.471z" />
           </svg>
         </a>
-        <a href="https://github.com" aria-label="GitHub">
+        <a href="https://github.com/rodolfovieira95" aria-label="GitHub">
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            {/* Ícone do GitHub */}
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.744.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.47-2.38 1.236-3.22-.124-.303-.536-1.523.117-3.176 0 0 1.01-.323 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.29-1.553 3.3-1.23 3.3-1.23.653 1.653.241 2.873.118 3.176.77.84 1.236 1.91 1.236 3.22 0 4.61-2.8 5.625-5.475 5.92.43.37.81 1.102.81 2.222 0 1.606-.015 2.896-.015 3.286 0 .322.22.694.825.576 4.765-1.587 8.2-6.084 8.2-11.386 0-6.627-5.373-12-12-12z" />
           </svg>
         </a>
       </div>
