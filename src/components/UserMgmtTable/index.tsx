@@ -18,7 +18,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getProjectUsers, ProjectUsers } from "@/actions/projects";
+import {
+  addUserToProject,
+  getProjectUsers,
+  ProjectUsers,
+} from "@/actions/projects";
 import { Role } from "@prisma/client";
 import {
   Dialog,
@@ -28,12 +32,30 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Label } from "../ui/label";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useToast } from "@/hooks/use-toast";
 
 export default function UserManagement({ projectId }: { projectId: string }) {
   const [projectUsers, setProjectUsers] = useState<ProjectUsers>([]);
   const [search, setSearch] = useState("");
-  const [filterPermission, setFilterPermission] = useState<"All" | Role>("All");
+  const [filterPermission, setFilterPermission] = useState<Role>("VIEWER");
+  const { toast } = useToast();
+
+  const form = useForm({
+    defaultValues: {
+      email: "",
+      role: "" as Role,
+    },
+  });
 
   useEffect(() => {
     const getUsers = async () => {
@@ -56,9 +78,36 @@ export default function UserManagement({ projectId }: { projectId: string }) {
 
     return (
       projectUser.user.name.toLowerCase().includes(search.toLowerCase()) &&
-      (filterPermission === "All" || projectUser.role === filterPermission)
+      projectUser.role === filterPermission
     );
   });
+
+  const onSubmit: SubmitHandler<{ email: string; role: Role }> = async (
+    data
+  ) => {
+    if (!data.email || !data.role) {
+      toast({
+        title: "Erro!",
+        description: "Preencha todos os campos!",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      await addUserToProject(projectId, data.email, data.role);
+      toast({
+        title: "Sucesso",
+        description: "Usuário adicionado com sucesso!",
+      });
+    } catch (error) {
+      console.error("Erro ao criar projeto:", error);
+      toast({
+        title: "Erro!",
+        description: "Erro ao adicionar usuário!",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -82,10 +131,10 @@ export default function UserManagement({ projectId }: { projectId: string }) {
             <SelectValue placeholder="Filtrar por permissão" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">Todos</SelectItem>
-            <SelectItem value="Admin">Admin</SelectItem>
-            <SelectItem value="Editor">Editor</SelectItem>
-            <SelectItem value="Viewer">Viewer</SelectItem>
+            <SelectItem value="ALL">Todos</SelectItem>
+            <SelectItem value="ADMIN">Admin</SelectItem>
+            <SelectItem value="EDITOR">Editor</SelectItem>
+            <SelectItem value="VIEWER">Viewer</SelectItem>
           </SelectContent>
         </Select>
 
@@ -98,9 +147,53 @@ export default function UserManagement({ projectId }: { projectId: string }) {
               <DialogTitle>Adicionar novo usuário</DialogTitle>
               <DialogClose />
             </DialogHeader>
-            <Label>E-mail</Label>
-            <Input placeholder="email@email.com" />
-            <Button>Adicionar</Button>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>E-mail:</FormLabel>
+                      <FormControl>
+                        <Input placeholder="email@email.com" {...field} />
+                      </FormControl>
+                      <FormDescription />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descrição do card:</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full md:w-1/4">
+                            <SelectValue placeholder="Selecione a permissão" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="ADMIN">Admin</SelectItem>
+                          <SelectItem value="EDITOR">Editor</SelectItem>
+                          <SelectItem value="VIEWER">Viewer</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button variant="outline">Cancelar</Button>
+                <Button type="submit">Criar</Button>
+              </form>
+            </Form>
           </DialogContent>
         </Dialog>
       </div>

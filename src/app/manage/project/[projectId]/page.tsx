@@ -14,7 +14,7 @@ const ManageProjectPage = async ({
   const projectInfo = await getProjectInfo(projectId);
 
   return (
-    <div className="px-8 min-h-dvh">
+    <div className="px-8 min-h-dvh mt-8">
       <h1 className="mb-8">Manage Project: {projectInfo?.name}</h1>
 
       <Tabs defaultValue="info" className="w-full">

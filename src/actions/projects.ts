@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { ProjectMember, User } from "@prisma/client";
+import { ProjectMember, Role, User } from "@prisma/client";
 
 export async function getUserProjects(userId: string) {
   return prisma.project.findMany({
@@ -102,6 +102,29 @@ export async function updateProjectInfo(projectInfo: {
     data: {
       name: projectInfo.title,
       description: projectInfo.description,
+    },
+  });
+}
+
+export async function addUserToProject(
+  projectId: string,
+  email: string,
+  role: Role
+) {
+  console.log(projectId, email, role);
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+  console.log({ user });
+  if (!user) {
+    throw Error("User not found");
+  }
+
+  await prisma.projectMember.create({
+    data: {
+      userId: user.id,
+      projectId,
+      role,
     },
   });
 }
