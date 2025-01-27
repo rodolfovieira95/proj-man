@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { createCard } from "@/actions/cards";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProjectFormData {
   title: string;
@@ -28,13 +29,19 @@ const NewCardForm = ({ columnId }: { columnId: string }) => {
     },
   });
 
+  const { toast } = useToast();
+
   const onSubmit = async (data: { title: string; description: string }) => {
     try {
       await createCard(data, columnId);
-      alert("Projeto criado com sucesso!");
+      toast({ title: "Sucesso!", description: "Projeto criado com sucesso!" });
     } catch (error) {
+      toast({
+        title: "Erro!",
+        description: "Erro ao criar o projeto!",
+        variant: "destructive",
+      });
       console.error("Erro ao criar projeto:", error);
-      alert("Erro ao criar projeto.");
     }
   };
 
