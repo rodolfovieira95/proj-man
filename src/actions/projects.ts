@@ -111,11 +111,9 @@ export async function addUserToProject(
   email: string,
   role: Role
 ) {
-  console.log(projectId, email, role);
   const user = await prisma.user.findUnique({
     where: { email },
   });
-  console.log({ user });
   if (!user) {
     throw Error("User not found");
   }
@@ -124,6 +122,31 @@ export async function addUserToProject(
     data: {
       userId: user.id,
       projectId,
+      role,
+    },
+  });
+}
+
+export async function removeUserFromProject(projectId: string, userId: string) {
+  await prisma.projectMember.delete({
+    where: {
+      id: userId,
+      projectId,
+    },
+  });
+}
+
+export async function updateUserPermission(
+  projectId: string,
+  userId: string,
+  role: Role
+) {
+  await prisma.projectMember.update({
+    where: {
+      id: userId,
+      projectId,
+    },
+    data: {
       role,
     },
   });

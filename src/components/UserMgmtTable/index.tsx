@@ -22,6 +22,8 @@ import {
   addUserToProject,
   getProjectUsers,
   ProjectUsers,
+  removeUserFromProject,
+  updateUserPermission,
 } from "@/actions/projects";
 import { Role } from "@prisma/client";
 import {
@@ -47,7 +49,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function UserManagement({ projectId }: { projectId: string }) {
   const [projectUsers, setProjectUsers] = useState<ProjectUsers>([]);
   const [search, setSearch] = useState("");
-  const [filterPermission, setFilterPermission] = useState<Role>("VIEWER");
+  const [filterPermission, setFilterPermission] = useState<Role | "ALL">("ALL");
   const { toast } = useToast();
 
   const form = useForm({
@@ -65,12 +67,29 @@ export default function UserManagement({ projectId }: { projectId: string }) {
     getUsers();
   }, [projectId]);
 
-  const handlePermissionChange = (id: string, newPermission: Role) => {
-    setProjectUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === id ? { ...user, permission: newPermission } : user
-      )
-    );
+  const handlePermissionChange = async (
+    userId: string,
+    newPermission: Role,
+    userProjectId: string
+  ) => {
+    try {
+      setProjectUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userId ? { ...user, permission: newPermission } : user
+        )
+      );
+
+      await updateUserPermission(projectId, userProjectId, newPermission);
+      toast({
+        title: "Sucesso!",
+        description: "Sucesso ao atualizar permissão do usuários!",
+      });
+    } catch {
+      toast({
+        title: "Error!",
+        description: "Erro ao atualizar permissão do usuários!",
+      });
+    }
   };
 
   const filteredUsers = projectUsers?.filter((projectUser) => {
@@ -78,7 +97,7 @@ export default function UserManagement({ projectId }: { projectId: string }) {
 
     return (
       projectUser.user.name.toLowerCase().includes(search.toLowerCase()) &&
-      projectUser.role === filterPermission
+      (filterPermission === "ALL" || projectUser.role === filterPermission)
     );
   });
 
@@ -131,7 +150,7 @@ export default function UserManagement({ projectId }: { projectId: string }) {
             <SelectValue placeholder="Filtrar por permissão" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="ALL">Todos</SelectItem>
+            <SelectItem value="ALL">All</SelectItem>
             <SelectItem value="ADMIN">Admin</SelectItem>
             <SelectItem value="EDITOR">Editor</SelectItem>
             <SelectItem value="VIEWER">Viewer</SelectItem>
@@ -209,37 +228,55 @@ export default function UserManagement({ projectId }: { projectId: string }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredUsers.map(({ user, role }) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>
-                <Select
-                  value={role}
-                  onValueChange={(value) =>
-                    handlePermissionChange(user.id, value as Role)
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione a permissão" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="Editor">Editor</SelectItem>
-                    <SelectItem value="Viewer">Viewer</SelectItem>
-                  </SelectContent>
-                </Select>
-              </TableCell>
-              <TableCell>
-                <Button
-                  variant="destructive"
-                  onClick={() => console.log("Remover usuário", user.id)}
-                >
-                  Remover
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {filteredUsers.map(({ user, role, id }) => {
+            console.log({ user, role });
+            return (
+              <TableRow key={user.id}>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  <Select
+                    value={role}
+                    onValueChange={async (value) =>
+                      await handlePermissionChange(user.id, value as Role, id)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a permissão" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ADMIN">Admin</SelectItem>
+                      <SelectItem value="EDITOR">Editor</SelectItem>
+                      <SelectItem value="VIEWER">Viewer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="destructive"
+                    onClick={async () => {
+                      try {
+                        await removeUserFromProject(projectId, id);
+                        toast({
+                          title: "Sucesso!",
+                          description: "Sucesso ao remover usuário!",
+                        });
+                      } catch (error) {
+                        console.error(error);
+                        toast({
+                          title: "Erro!",
+                          description: "Erro ao remover usuário!",
+                          variant: "destructive",
+                        });
+                      }
+                    }}
+                  >
+                    Remover
+                  </Button>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
 
