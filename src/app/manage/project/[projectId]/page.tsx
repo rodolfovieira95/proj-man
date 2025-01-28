@@ -4,6 +4,11 @@ import ProjectMgmtForm from "@/components/ProjectMgmtForm";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserManagement from "@/components/UserMgmtTable";
+import { Prisma } from "@prisma/client";
+
+type ProjectWithColumns = Prisma.ProjectGetPayload<{
+  include: { columns: true };
+}>;
 
 const ManageProjectPage = async ({
   params,
@@ -11,7 +16,7 @@ const ManageProjectPage = async ({
   params: Promise<{ projectId: string }>;
 }) => {
   const projectId = (await params).projectId;
-  const projectInfo = await getProjectInfo(projectId);
+  const projectInfo = (await getProjectInfo(projectId)) as ProjectWithColumns;
 
   return (
     <div className="px-8 min-h-dvh mt-8">
@@ -30,7 +35,7 @@ const ManageProjectPage = async ({
           <UserManagement projectId={projectId} />
         </TabsContent>
         <TabsContent value="layout">
-          <ColumnLayoutEditor projectId={projectId} />
+          <ColumnLayoutEditor projectId={projectId} projectInfo={projectInfo} />
         </TabsContent>
       </Tabs>
     </div>

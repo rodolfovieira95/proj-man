@@ -10,20 +10,30 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createBoard } from "@/actions/projects";
+import { Prisma } from "@prisma/client";
+import { useToast } from "@/hooks/use-toast";
 
 const predefinedLayouts = {
   KANBAN: ["To Do", "In Progress", "Done"],
   SCRUM: ["Backlog", "Sprint", "Testing", "Completed"],
 };
 
+type ProjectWithColumns = Prisma.ProjectGetPayload<{
+  include: { columns: true };
+}>;
+
 export default function ColumnLayoutEditor({
   projectId,
+  projectInfo,
 }: {
   projectId: string;
+  projectInfo: ProjectWithColumns;
 }) {
-  const [columns, setColumns] = useState<string[]>(predefinedLayouts.KANBAN);
+  const initialColumns = projectInfo.columns.map((column) => column.name);
+  const [columns, setColumns] = useState<string[]>(initialColumns);
   const [customName, setCustomName] = useState("");
   const [customMode, setCustomMode] = useState(false);
+  const { toast } = useToast();
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -56,18 +66,24 @@ export default function ColumnLayoutEditor({
     setColumns([]);
   };
 
+  const actualLayout = () => {
+    setCustomMode(false);
+    setColumns(initialColumns);
+  };
+
   const handleCreateBoard = async () => {
     try {
       await createBoard(columns, projectId);
+      toast({ title: "Sucesso", description: "Board alterado com sucesso!" });
     } catch {
-      alert("Erro ao criar board: ");
+      toast({ title: "Error!", description: "Erro ao criar board!" });
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Column Layout Editor</h1>
+        <h1 className="text-2xl font-bold">Organização das colunas</h1>
         <div className="flex gap-2">
           {Object.keys(predefinedLayouts).map((layout) => (
             <Button
@@ -80,6 +96,9 @@ export default function ColumnLayoutEditor({
               {layout}
             </Button>
           ))}
+          <Button variant="outline" onClick={actualLayout}>
+            Layout Atual
+          </Button>
           <Button variant="outline" onClick={enableCustomMode}>
             Custom Layout
           </Button>
@@ -133,7 +152,7 @@ export default function ColumnLayoutEditor({
           )}
         </Droppable>
       </DragDropContext>
-      <Button onClick={handleCreateBoard}>Criar Board</Button>
+      <Button onClick={handleCreateBoard}>Atualizar Board</Button>
     </div>
   );
 }
