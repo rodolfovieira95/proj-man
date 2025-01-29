@@ -3,7 +3,7 @@ import ColumnLayoutEditor from "@/components/ColumnLayoutEditor";
 import ProjectMgmtForm from "@/components/ProjectMgmtForm";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import UserManagement from "@/components/UserMgmtTable";
+import UserManagement from "@/components/UserManagementTab";
 import { Prisma } from "@prisma/client";
 
 type ProjectWithColumns = Prisma.ProjectGetPayload<{
