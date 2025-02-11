@@ -1,15 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  OnDragEndResponder,
-} from "@hello-pangea/dnd";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DragDropContext, OnDragEndResponder } from "@hello-pangea/dnd";
 import { updateCardOrder } from "@/actions/cards";
 import { Card as CardType } from ".prisma/client";
+import KanbanColumn from "../KanbanColumn";
+import CardDialog from "../CardDialog";
 
 export default function KanbanBoard({
   initialColumns,
@@ -30,6 +26,8 @@ export default function KanbanBoard({
     | undefined;
 }) {
   const [columns, setColumns] = useState(initialColumns);
+  const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleDragEnd: OnDragEndResponder = async (result) => {
     const { source, destination } = result;
@@ -97,54 +95,44 @@ export default function KanbanBoard({
     }
   };
 
+  const handleCardClick = (card: CardType) => {
+    setSelectedCard(card);
+    setIsEditing(false);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = (data: CardType) => {
+    console.log("Dados salvos:", data);
+    setSelectedCard(null);
+    setIsEditing(false);
+  };
+
   return (
     <div className="p-6 space-y-6">
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="flex gap-4 overflow-x-auto">
           {columns?.map((column) => (
-            <Droppable key={column.id} droppableId={column.id}>
-              {(provided, snapshot) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className={`p-4 rounded-lg shadow space-y-4 transition-colors duration-200 flex-shrink-0 flex-grow flex-basis-0 ${
-                    snapshot.isDraggingOver ? "bg-blue-100" : "bg-muted"
-                  }`}
-                >
-                  <h2 className="text-lg font-semibold">{column.name}</h2>
-                  {column.cards.map((card, index) => (
-                    <Draggable
-                      key={card.id}
-                      draggableId={card.id}
-                      index={index}
-                    >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={`transition-transform duration-200 ${
-                            snapshot.isDragging ? "shadow-lg bg-blue-50" : ""
-                          }`}
-                          style={provided.draggableProps.style}
-                        >
-                          <Card>
-                            <CardHeader>
-                              <CardTitle>{card.title}</CardTitle>
-                            </CardHeader>
-                            <CardContent>{card.description}</CardContent>
-                          </Card>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
+            <KanbanColumn
+              key={column.id}
+              column={column}
+              onCardClick={handleCardClick}
+            />
           ))}
         </div>
       </DragDropContext>
+
+      {selectedCard && (
+        <CardDialog
+          card={selectedCard}
+          isEditing={isEditing}
+          onClose={() => setSelectedCard(null)}
+          onEdit={handleEditClick}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
 }
