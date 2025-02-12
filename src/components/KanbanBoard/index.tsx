@@ -12,12 +12,7 @@ export default function KanbanBoard({
 }: {
   initialColumns:
     | ({
-        cards: {
-          id: string;
-          description: string | null;
-          title: string;
-          columnId: string;
-        }[];
+        cards: CardType[];
       } & {
         name: string;
         id: string;
