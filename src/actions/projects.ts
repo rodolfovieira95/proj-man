@@ -24,6 +24,25 @@ export async function getProjectInfo(id: string) {
 }
 
 export async function deleteProject(projectId: string) {
+  await prisma.projectMember.deleteMany({
+    where: { projectId },
+  });
+
+  const columns = await prisma.column.findMany({
+    where: { projectId },
+    include: { cards: true },
+  });
+
+  for (const column of columns) {
+    await prisma.card.deleteMany({
+      where: { columnId: column.id },
+    });
+  }
+
+  await prisma.column.deleteMany({
+    where: { projectId },
+  });
+
   return prisma.project.delete({
     where: { id: projectId },
   });

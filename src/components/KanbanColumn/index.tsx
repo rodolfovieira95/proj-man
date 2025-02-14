@@ -19,7 +19,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onCardClick }) => {
         <div
           ref={provided.innerRef}
           {...provided.droppableProps}
-          className={`p-4 rounded-lg shadow space-y-4 transition-colors duration-200 flex-shrink-0 flex-grow flex-basis-0 ${
+          className={`p-4 rounded-lg shadow space-y-4 transition-colors duration-200 flex-grow min-w-[250px] ${
             snapshot.isDraggingOver ? "bg-blue-100" : "bg-muted"
           }`}
         >

@@ -110,11 +110,9 @@ export default function KanbanBoard({
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="flex gap-4 overflow-x-auto">
           {columns?.map((column) => (
-            <KanbanColumn
-              key={column.id}
-              column={column}
-              onCardClick={handleCardClick}
-            />
+            <div key={column.id} className="flex-shrink-0 w-64">
+              <KanbanColumn column={column} onCardClick={handleCardClick} />
+            </div>
           ))}
         </div>
       </DragDropContext>

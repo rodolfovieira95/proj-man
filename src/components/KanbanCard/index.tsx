@@ -19,15 +19,14 @@ const KanbanCard: React.FC<KanbanCardProps> = ({ card, index, onClick }) => {
           {...provided.dragHandleProps}
           className={`transition-transform duration-200 ${
             snapshot.isDragging ? "shadow-lg bg-blue-50" : ""
-          }`}
-          style={provided.draggableProps.style}
+          } ${snapshot.isDragging ? "w-auto h-auto" : "w-full h-[150px]"}`}
           onClick={() => onClick(card)}
         >
-          <Card>
-            <CardHeader>
-              <CardTitle>{card.title}</CardTitle>
+          <Card className="h-full w-full overflow-hidden">
+            <CardHeader className="truncate">
+              <CardTitle className="truncate">{card.title}</CardTitle>
             </CardHeader>
-            <CardContent>{card.description}</CardContent>
+            <CardContent className="truncate">{card.description}</CardContent>
           </Card>
         </div>
       )}
